@@ -1,0 +1,4 @@
+THRESHOLDS = [0.015, 0.025, 0.035]
+CHAR_DIR = "./character"
+CAMERA_INDEX = 0
+UPDATE_INTERVAL_MS = 30  # 更新間隔(ms)

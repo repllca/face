@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Three.js 基本編</title>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      // 1) three.js本体の読み込み（CDN / ES Modules）
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+
+      // 2) シーン（舞台）を作る
+      const scene = new THREE.Scene();
+
+      // 3) カメラ（見る人）を作る
+      const camera = new THREE.PerspectiveCamera(
+        75,                                   // 視野角（FOV）
+        window.innerWidth / window.innerHeight, // 画面の横/縦
+        0.1,                                  // 手前の切り捨て距離（近すぎは描かない）
+        1000                                  // 奥の切り捨て距離（遠すぎは描かない）
+      );
+      camera.position.z = 3; // カメラを少し後ろへ
+
+      // 4) レンダラー（描画機械）を作る
+      const renderer = new THREE.WebGLRenderer({ antialias: true }); // ギザギザ軽減
+      renderer.setSize(window.innerWidth, window.innerHeight);        // キャンバスの解像度
+      document.body.appendChild(renderer.domElement);                 // 画面に取り付け
+
+      // 5) 形（ジオメトリ）＋ 見た目（マテリアル）＝ メッシュ
+      const geometry = new THREE.BoxGeometry(1, 1, 1);                // 1x1x1の立方体
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // 単色（光の影響なし）
+      const cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);                                                // 舞台に置く
+
+      // 6) 毎フレーム呼ばれるループ処理（アニメーション）
+      function animate() {
+        requestAnimationFrame(animate);   // 次のフレームでもanimateを呼ぶ
+        cube.rotation.x += 0.01;          // X回転
+        cube.rotation.y += 0.01;          // Y回転
+        renderer.render(scene, camera);   // シーンをカメラ目線で描画
+      }
+      animate();
+
+      // 7) ウィンドウサイズに合わせてカメラと描画領域を更新
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight; // アスペクト比
+        camera.updateProjectionMatrix();                        // 変更を反映
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    </script>
+  </body>
+</html>
